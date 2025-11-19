@@ -3,6 +3,13 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 
 export const register =  async (req,res)=>{
+    console.log('Request body:', req.body);
+    console.log('Content-Type:', req.headers['content-type']);
+    
+    if(!req.body){
+        return res.json({success:false, message:'No request body received. Make sure Content-Type is application/json'})
+    }
+    
     const {name,email,password}=req.body;
     if(!name||!email||!password){
         return res.json({success:false, message:'Missing Details'})
@@ -65,7 +72,7 @@ export const login =async(req,res)=>{
 
 export const logout=async(req,res)=>{
     try {
-         res.clearCookie('token', token,{
+         res.clearCookie('token',{
             httpOnly:true,
             secure:process.env.NODE_ENV === 'production',
             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
