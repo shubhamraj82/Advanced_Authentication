@@ -129,6 +129,7 @@ export const sendVerifyOtp = async(req,res)=>{
     }
 }
 
+//verify otp using email
 export const verifyEmail = async(req,res)=>{
     const {userId,otp}=req.body;
     if(!userId || !otp){
@@ -156,4 +157,13 @@ export const verifyEmail = async(req,res)=>{
         res.json({success:false,message:error.message});
     }
 
+}
+
+//check if user is authenticated or not
+export const isAuthenticated = async(req,res)=>{
+    try {
+        return res.json({success:true});
+    } catch (error) {
+        res.json({success:false,message:error.message});
+    }
 }
