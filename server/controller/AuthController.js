@@ -2,7 +2,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import transporter from "../config/nodemailer.js";
-import { use } from "react";
 
 export const register =  async (req,res)=>{
     console.log('Request body:', req.body);

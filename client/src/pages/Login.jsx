@@ -1,15 +1,47 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { assets } from '../assets/assets';
-import { useNavigate } from 'react-router-dom';
+import { data, useNavigate } from 'react-router-dom';
+import { AppContent } from '../context/AppContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
   const navigate=useNavigate();
 
+  const {backendUrl,setIsLoggedIn,getUserData}=useContext(AppContent);
+
   const [state,setState] = useState('sign-up');
   const [name,setName]= useState('');
   const [email,setEmail]= useState('');
   const [password,setPassword]= useState('');
+
+  const onSubmitHandler=async(e)=>{
+    try {
+      e.preventDefault();
+      axios.defaults.withCredentials =true;
+      if(state==='sign-up'){
+        const {data} = await axios.post(backendUrl+'/api/auth/userRegister', {name,email,password})
+        if(data.success){
+          setIsLoggedIn(true);
+          getUserData();
+          navigate('/');
+        }else{
+          toast.error(error.message);
+        }
+      }else{
+        const {data}=await axios.post(backendUrl+'/api/auth/login',{email,password});
+        if(data.success){
+          setIsLoggedIn(true);
+          getUserData();
+          navigate('/');
+        }else{
+          toast.error(error.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
   return (
     <div className='flex items-center justify-center min-h-screen px-6 sm:px-0 bg-gradient-to-br from-blue-200 to-purple-400'>
@@ -17,7 +49,7 @@ const Login = () => {
         <div className='bg-slate-900 p-10 rounded-lg shadow-lg w-full sm:w-96 text-indigo-300 text-sm'>
           <h2 className='text-3xl font-semibold text-white text-center mb-3'>{state === 'sign-up' ? 'Create Account' : 'Login'}</h2>
           <p className='text-center text-sm mb-6'>{state === 'sign-up' ? 'Sign up to get started' : 'Login to your account!'}</p>
-          <form>
+          <form onSubmit={onSubmitHandler}>
             {state === 'sign-up' && (  <div className='mb-4 flex items-center gap-3 w-full px-5 py-2.5 rounded-full bg-[#333A5C]'>
               <img src={assets.person_icon} alt="" />
               <input
